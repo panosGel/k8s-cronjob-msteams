@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+    name: msteams
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: webhook-msteams
+              image: panosgeladaris1/webhook-msteams:latest
+              env:
+                - name: WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: cronjob-msteams-secret
+                      key: WEBHOOK_URL
+                - name: MESSAGE
+                  value: "running from cronjob"
+          restartPolicy: OnFailure
